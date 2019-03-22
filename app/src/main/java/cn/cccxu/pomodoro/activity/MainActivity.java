@@ -8,9 +8,8 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.Window;
-import android.view.WindowManager;
 
+import com.githang.statusbar.StatusBarCompat;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
 import cn.cccxu.pomodoro.R;
@@ -54,11 +53,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        //requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
 
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        //getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         //getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle("Promodoro");
@@ -107,7 +106,8 @@ public class MainActivity extends AppCompatActivity {
                 beginTransaction.show(todoFragment);
                 beginTransaction.addToBackStack(null);
                 beginTransaction.commit();
-                bnve.setBackgroundColor(Color.parseColor("#0071C9"));
+                bnve.setBackgroundColor(Color.parseColor("#344FDA"));
+                StatusBarCompat.setStatusBarColor(this, Color.parseColor("#34A2DA"));
                 break;
             case R.id.music_fragment:
                 hideAll();
