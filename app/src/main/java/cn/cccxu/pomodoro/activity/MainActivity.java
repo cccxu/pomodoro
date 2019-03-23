@@ -1,13 +1,23 @@
 package cn.cccxu.pomodoro.activity;
 
 import android.app.FragmentTransaction;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.githang.statusbar.StatusBarCompat;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
@@ -18,13 +28,26 @@ import cn.cccxu.pomodoro.fragment.MusicFragment;
 import cn.cccxu.pomodoro.fragment.SettingsFragment;
 import cn.cccxu.pomodoro.fragment.StartFragment;
 import cn.cccxu.pomodoro.fragment.TodoFragment;
+import cn.cccxu.pomodoro.service.CountDownTimerService;
+import cn.cccxu.pomodoro.service.MediaService;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
     private TodoFragment todoFragment;
     private MusicFragment musicFragment;
     private StartFragment startFragment;
     private HistoryFragment historyFragment;
     private SettingsFragment settingsFragment;
+
+    private TextView timerText;
+
+    private Handler mHandler = new Handler();
+    private Handler mHandlerCount = new Handler();
+    //use binder to call method in service
+    private static MediaService.MyBinder mMyBinder;
+    private static CountDownTimerService.MyBinder mMyBinderCount;
+
+    Intent mMediaServiceIntent;
+    Intent mCountDownTimerIntent;
 
     private BottomNavigationViewEx.OnNavigationItemSelectedListener mNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
@@ -53,12 +76,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        //requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
 
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        //getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        //getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle("Promodoro");
 
@@ -84,7 +104,69 @@ public class MainActivity extends AppCompatActivity {
         hideAll();
 
         showFragment(R.id.todo_fragment);
+
+        //bind service
+        mMediaServiceIntent = new Intent(this, MediaService.class);
+        bindService(mMediaServiceIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
+
+        mCountDownTimerIntent = new Intent(this, CountDownTimerService.class);
+        bindService(mCountDownTimerIntent, mServiceConnectionCount, Context.BIND_AUTO_CREATE);
+//        startService(mCountDownTimerIntent);
     }
+
+    private ServiceConnection mServiceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            mMyBinder = (MediaService.MyBinder) service;
+            mHandler.post(mRunnable);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+        }
+    };
+
+    private ServiceConnection mServiceConnectionCount = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            mMyBinderCount = (CountDownTimerService.MyBinder) service;
+            mHandlerCount.post(mRunnable);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+        }
+    };
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        mHandler.removeCallbacks(mRunnable);
+        mMyBinder.closeMedia();
+        unbindService(mServiceConnection);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // 注册广播
+        registerReceiver(mUpdateReceiver, updateIntentFilter());
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // 移除注册
+        unregisterReceiver(mUpdateReceiver);
+    }
+
+    //update UI
+    private Runnable mRunnable = new Runnable() {
+        @Override
+        public void run() {
+            mHandler.postDelayed(mRunnable, 1000);
+        }
+    };
 
     private void hideAll(){
         FragmentTransaction beginTransaction = getFragmentManager().beginTransaction();
@@ -136,4 +218,53 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }
+
+    public void play(){
+        mMyBinder.playMusic();
+    }
+
+    public void pause(){
+        mMyBinder.pauseMusic();
+    }
+
+    private static IntentFilter updateIntentFilter(){
+        final IntentFilter mIntentFilter = new IntentFilter();
+        mIntentFilter.addAction(CountDownTimerService.IN_RUNNING);
+        mIntentFilter.addAction(CountDownTimerService.END_RUNNING);
+        return mIntentFilter;
+    }
+
+    private final BroadcastReceiver mUpdateReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
+            switch(action){
+                case CountDownTimerService.IN_RUNNING:
+                    //do sth
+                    startFragment.setText(intent.getStringExtra("time"));
+                    //
+                    break;
+                case CountDownTimerService.END_RUNNING:
+                    //do sth
+                    break;
+                default:
+                    makeToast("No MSG");
+                    break;
+            }
+        }
+    };
+
+    private void makeToast(String text){
+        Toast.makeText(this, text, Toast.LENGTH_LONG);
+    }
+
+    public void start(){
+        mMyBinderCount.startTimer();
+    }
+
+    public void stop(){
+        mMyBinderCount.stopTimer();
+    }
+
 }

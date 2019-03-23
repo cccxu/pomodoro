@@ -30,4 +30,5 @@ dependencies {
     implementation 'com.github.ittianyu:BottomNavigationViewEx:2.0.2'
     implementation 'com.github.yalantis:todolist:v1.0.1'
     implementation 'com.githang:status-bar-compat:latest.integration'
+    implementation 'com.github.iwgang:countdownview:2.1.6'
 }

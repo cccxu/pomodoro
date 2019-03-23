@@ -1,4 +1,4 @@
-package cn.cccxu.pomodoro.model;
+package cn.cccxu.pomodoro.util;
 
 import com.yalantis.beamazingtoday.interfaces.BatModel;
 

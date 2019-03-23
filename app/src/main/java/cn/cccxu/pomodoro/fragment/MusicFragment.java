@@ -7,34 +7,45 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.SeekBar;
-import android.widget.TextView;
 
 import cn.cccxu.pomodoro.R;
+import cn.cccxu.pomodoro.activity.MainActivity;
 
-public class MusicFragment extends Fragment {
-    private Button isPlay;
-    private Button stop;
-    private Button quit;
+public class MusicFragment extends Fragment{
 
-    private ImageView coverImage;
-    // private ObjectAnimator animator;
-    private int flag = 0;
-
-    private TextView totalTime;
-    private TextView playingTime;
-    private TextView stateText;
-
-    private SeekBar seekBar;
-    private TextView pathText;
+    private View view;
+    private Button playButton;
+    private Button pauseButton;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater,
                              @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState){
-        return inflater.inflate(R.layout.music, container, false);
+                             @Nullable Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.music, container, false);
+        playButton = view.findViewById(R.id.play);
+        pauseButton = view.findViewById(R.id.pause);
+        return view;
+    }
+
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState){
+        super.onActivityCreated(savedInstanceState);
+
+        playButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((MainActivity) getActivity()).play();
+            }
+        });
+
+        pauseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((MainActivity) getActivity()).pause();
+            }
+        });
     }
 
 }

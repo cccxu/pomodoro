@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.cccxu.pomodoro.R;
-import cn.cccxu.pomodoro.model.Goal;
+import cn.cccxu.pomodoro.util.Goal;
 
 public class TodoFragment extends Fragment implements BatListener, OnItemClickListener, OnOutsideClickedListener {
 
