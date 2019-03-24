@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -49,30 +50,6 @@ public class MainActivity extends AppCompatActivity{
     Intent mMediaServiceIntent;
     Intent mCountDownTimerIntent;
 
-    private BottomNavigationViewEx.OnNavigationItemSelectedListener mNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-            switch (menuItem.getItemId()){
-                case R.id.todo:
-                    showFragment(R.id.todo_fragment);
-                    return true;
-                case R.id.music:
-                    showFragment(R.id.music_fragment);
-                    return true;
-                case R.id.start:
-                    showFragment(R.id.start_fragment);
-                    return true;
-                case R.id.settings:
-                    showFragment(R.id.settings_fragment);
-                    return true;
-                case R.id.history:
-                    showFragment(R.id.history_fragment);
-                    return true;
-            }
-            return false;
-        }
-    };
-
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -111,8 +88,43 @@ public class MainActivity extends AppCompatActivity{
 
         mCountDownTimerIntent = new Intent(this, CountDownTimerService.class);
         bindService(mCountDownTimerIntent, mServiceConnectionCount, Context.BIND_AUTO_CREATE);
-//        startService(mCountDownTimerIntent);
+        //use shared preference to save data
+        SharedPreferences settings = getSharedPreferences("settings", Context.MODE_PRIVATE);
+        //check iif the preference exist
+        if(settings.getString("LengthOfTamato", null) == null){
+            //put default value
+            SharedPreferences.Editor editor = settings.edit();
+            editor.putString("LengthOfTamato", "25");
+            editor.putString("LengthOfShortRest", "5");
+            editor.putString("TamatoBeforeLongRest", "4");
+            editor.putString("LengthOfLongRest", "15");
+            editor.apply();
+        }
     }
+
+    private BottomNavigationViewEx.OnNavigationItemSelectedListener mNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+            switch (menuItem.getItemId()){
+                case R.id.todo:
+                    showFragment(R.id.todo_fragment);
+                    return true;
+                case R.id.music:
+                    showFragment(R.id.music_fragment);
+                    return true;
+                case R.id.start:
+                    showFragment(R.id.start_fragment);
+                    return true;
+                case R.id.settings:
+                    showFragment(R.id.settings_fragment);
+                    return true;
+                case R.id.history:
+                    showFragment(R.id.history_fragment);
+                    return true;
+            }
+            return false;
+        }
+    };
 
     private ServiceConnection mServiceConnection = new ServiceConnection() {
         @Override
@@ -144,6 +156,7 @@ public class MainActivity extends AppCompatActivity{
         mHandler.removeCallbacks(mRunnable);
         mMyBinder.closeMedia();
         unbindService(mServiceConnection);
+        unbindService(mServiceConnectionCount);
     }
 
     @Override
@@ -202,6 +215,7 @@ public class MainActivity extends AppCompatActivity{
                 beginTransaction.show(startFragment);
                 beginTransaction.addToBackStack(null);
                 beginTransaction.commit();
+                mMyBinderCount.startTimer();
                 break;
             case R.id.history_fragment:
                 hideAll();
@@ -242,11 +256,19 @@ public class MainActivity extends AppCompatActivity{
             switch(action){
                 case CountDownTimerService.IN_RUNNING:
                     //do sth
-                    startFragment.setText(intent.getStringExtra("time"));
+                    String secondstr = intent.getStringExtra("time");
+                    String maxstr = intent.getStringExtra("totalTime");
+                    int seconds = Integer.valueOf(secondstr);
+                    int Minutes = seconds / 60;
+                    seconds = seconds % 60;
+                    String time = String.valueOf(Minutes) + " : " + String.valueOf(seconds);
+                    startFragment.setText(time);
+                    startFragment.setProgress(Integer.valueOf(maxstr),Integer.valueOf(secondstr));
                     //
                     break;
                 case CountDownTimerService.END_RUNNING:
                     //do sth
+                    start();
                     break;
                 default:
                     makeToast("No MSG");
@@ -254,6 +276,7 @@ public class MainActivity extends AppCompatActivity{
             }
         }
     };
+
 
     private void makeToast(String text){
         Toast.makeText(this, text, Toast.LENGTH_LONG);

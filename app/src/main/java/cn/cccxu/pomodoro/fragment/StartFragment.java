@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.coder.circlebar.CircleBar;
+
 import cn.cccxu.pomodoro.R;
 import cn.cccxu.pomodoro.activity.MainActivity;
 
@@ -20,6 +22,8 @@ public class StartFragment extends Fragment {
     private Button pause;
     private TextView timer;
 
+    private CircleBar mCircleProgress;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -28,7 +32,8 @@ public class StartFragment extends Fragment {
         view = inflater.inflate(R.layout.start, container, false);
         start = view.findViewById(R.id.start);
         pause = view.findViewById(R.id.pause);
-        timer = view.findViewById(R.id.timer);
+        timer = view.findViewById(R.id.timer_text);
+        mCircleProgress = view.findViewById(R.id.tasks_view);
         return view;
     }
 
@@ -53,5 +58,10 @@ public class StartFragment extends Fragment {
 
     public void setText(String text){
         timer.setText(text);
+    }
+
+    public void setProgress(int max, int current){
+        mCircleProgress.setMaxstepnumber(max);
+        mCircleProgress.update(current, 1000);
     }
 }

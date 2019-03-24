@@ -18,7 +18,7 @@ public class MediaService extends Service {
     //number of songs
     private int songNum = 0;
     //init media player
-    public MediaPlayer mMediaPlayer = new MediaPlayer();
+    public MediaPlayer mMediaPlayer;
     private MyBinder mBinder = new MyBinder();
 
     private void initMediaPlayer(){
