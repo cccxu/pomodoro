@@ -115,7 +115,7 @@ public class CountDownTimerService extends Service {
             switch(flag){
                 case 0:
                     count++;
-                    if(count % 4 == 0){
+                    if(count % Integer.valueOf(tamatoBeforeLongRest) == 0){
                         flag = 2;
                     }else{
                         flag = 1;
