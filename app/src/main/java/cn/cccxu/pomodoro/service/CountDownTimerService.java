@@ -8,6 +8,7 @@ import android.os.Binder;
 import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 public class CountDownTimerService extends Service {
 
@@ -26,8 +27,6 @@ public class CountDownTimerService extends Service {
     private int count = 0;
     //whether the timer is ticking
     private boolean tick = false;
-    //abadon
-    private boolean abandon = false;
 
     private long totalTime;
     public static final String IN_RUNNING = "cn.cccxu.pomodoro.IN_RUNNING";
@@ -61,6 +60,7 @@ public class CountDownTimerService extends Service {
     public class MyBinder extends Binder {
         public void startTimer(){
             if(tick){
+                Log.v("tick", "Ticking");
                 return;
             }
             //read settings
@@ -88,26 +88,23 @@ public class CountDownTimerService extends Service {
                     switch(flag){
                         case 0:
                             count++;
-                            if(count % 4 == 0){
+                            if(count % Integer.valueOf(tamatoBeforeLongRest) == 0){
                                 flag = 2;
                             }else{
                                 flag = 1;
                             }
-
-                            if(!abandon) {
-                                //get one tamato
-                                //write to reference file
-                                SharedPreferences sharedPreferences = getSharedPreferences("tamato", MODE_PRIVATE);
-                                SharedPreferences.Editor editor = sharedPreferences.edit();
-                                //init on first time
-                                if (sharedPreferences.getInt("tamatoCount", -1) == -1) {
-                                    editor.putInt("tamatoCount", 0);
-                                } else {
-                                    editor.putInt("tamatoCount", sharedPreferences.getInt("tamatoCount", -1) + 1);
-                                }
+                            //get one tamato
+                            //write to reference file
+                            SharedPreferences sharedPreferences = getSharedPreferences("tamato", MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            //init on first time
+                            if (sharedPreferences.getInt("tamatoCount", -1) == -1) {
+                                editor.putInt("tamatoCount", 0);
+                                editor.apply();
+                            } else {
+                                editor.putInt("tamatoCount", sharedPreferences.getInt("tamatoCount", -1) + 1);
+                                editor.apply();
                             }
-
-                            abandon = false;
                             break;
                         case 1:
                             flag = 0;
@@ -117,6 +114,7 @@ public class CountDownTimerService extends Service {
                             break;
                     }
                     broadcastUpdate(END_RUNNING);
+                    tick = false;
                 }
             };
             mCountDownTimer.start();
@@ -128,31 +126,10 @@ public class CountDownTimerService extends Service {
                 return;
             }
 
-            if(flag == 0){
-                abandon = true;
-            }
-
             if(flag != 0){
                 flag = 0;
             }
 
-
-//            switch(flag){
-//                case 0:
-//                    count++;
-//                    if(count % Integer.valueOf(tamatoBeforeLongRest) == 0){
-//                        flag = 2;
-//                    }else{
-//                        flag = 1;
-//                    }
-//                    break;
-//                case 1:
-//                    flag = 0;
-//                    break;
-//                case 2:
-//                    flag = 0;
-//                    break;
-//            }
             mCountDownTimer.cancel();
             tick = false;
         }

@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import cn.cccxu.pomodoro.R;
 import cn.cccxu.pomodoro.activity.MainActivity;
@@ -15,8 +14,8 @@ import cn.cccxu.view.PlayView;
 public class MusicFragment extends Fragment{
 
     private View view;
-    private Button playButton;
-    private Button pauseButton;
+//    private Button playButton;
+//    private Button pauseButton;
     private PlayView play;
 
     @Nullable
@@ -25,8 +24,8 @@ public class MusicFragment extends Fragment{
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.music, container, false);
-        playButton = view.findViewById(R.id.play);
-        pauseButton = view.findViewById(R.id.pause);
+//        playButton = view.findViewById(R.id.play);
+//        pauseButton = view.findViewById(R.id.pause);
         play = view.findViewById(R.id.play_view);
         return view;
     }
@@ -36,27 +35,29 @@ public class MusicFragment extends Fragment{
     public void onActivityCreated(Bundle savedInstanceState){
         super.onActivityCreated(savedInstanceState);
 
-        playButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ((MainActivity) getActivity()).play();
-            }
-        });
-
-        pauseButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ((MainActivity) getActivity()).pause();
-            }
-        });
+//        playButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                ((MainActivity) getActivity()).play();
+//            }
+//        });
+//
+//        pauseButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                ((MainActivity) getActivity()).pause();
+//            }
+//        });
 
         play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(play.isPlaying()){
                     ((MainActivity) getActivity()).pause();
+                    play.setChecked(false);
                 }else {
                     ((MainActivity) getActivity()).play();
+                    play.setChecked(true);
                 }
             }
         });

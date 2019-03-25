@@ -222,6 +222,7 @@ public class MainActivity extends AppCompatActivity{
                 beginTransaction.show(historyFragment);
                 beginTransaction.addToBackStack(null);
                 beginTransaction.commit();
+                historyFragment.updateTamatoNum();
                 break;
             case R.id.settings_fragment:
                 hideAll();
@@ -259,9 +260,22 @@ public class MainActivity extends AppCompatActivity{
                     String secondstr = intent.getStringExtra("time");
                     String maxstr = intent.getStringExtra("totalTime");
                     int seconds = Integer.valueOf(secondstr);
-                    int Minutes = seconds / 60;
+                    int minutes = seconds / 60;
                     seconds = seconds % 60;
-                    String time = String.valueOf(Minutes) + " : " + String.valueOf(seconds);
+                    //build timer text
+                    //to make it looks better, when the number < 10, add blankspace(for minutes) or 0(for seconds)
+                    String time;
+                    if(seconds < 10){
+                        time = String.valueOf(minutes) + " : 0" + String.valueOf(seconds);
+                        if(minutes < 10){
+                            time = " " + time;
+                        }
+                    }else {
+                        time = String.valueOf(minutes) + " : " + String.valueOf(seconds);
+                        if(minutes < 10){
+                            time = " " + time;
+                        }
+                    }
                     startFragment.setText(time);
                     startFragment.setProgress(Integer.valueOf(maxstr)/1000,Integer.valueOf(secondstr));
                     break;
