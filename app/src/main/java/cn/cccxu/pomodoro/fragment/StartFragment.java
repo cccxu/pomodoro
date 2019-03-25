@@ -34,6 +34,8 @@ public class StartFragment extends Fragment {
         pause = view.findViewById(R.id.pause);
         timer = view.findViewById(R.id.timer_text);
         mCircleProgress = view.findViewById(R.id.tasks_view);
+        int[] mColors = new int[]{0xFF8CE0FC, 0xFF4491F2, 0xFF1C72E8, 0xFF005BED};
+        mCircleProgress.setShaderColor(mColors);
         return view;
     }
 
@@ -62,6 +64,6 @@ public class StartFragment extends Fragment {
 
     public void setProgress(int max, int current){
         mCircleProgress.setMaxstepnumber(max);
-        mCircleProgress.update(current, 1000);
+        mCircleProgress.update(max - current, 0);
     }
 }

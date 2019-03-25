@@ -263,8 +263,7 @@ public class MainActivity extends AppCompatActivity{
                     seconds = seconds % 60;
                     String time = String.valueOf(Minutes) + " : " + String.valueOf(seconds);
                     startFragment.setText(time);
-                    startFragment.setProgress(Integer.valueOf(maxstr),Integer.valueOf(secondstr));
-                    //
+                    startFragment.setProgress(Integer.valueOf(maxstr)/1000,Integer.valueOf(secondstr));
                     break;
                 case CountDownTimerService.END_RUNNING:
                     //do sth
@@ -288,6 +287,8 @@ public class MainActivity extends AppCompatActivity{
 
     public void stop(){
         mMyBinderCount.stopTimer();
+        SharedPreferences settings = getSharedPreferences("settings", Context.MODE_PRIVATE);
+        startFragment.setText(settings.getString("LengthOfTamato", "25") + " : 00");
     }
 
 }
