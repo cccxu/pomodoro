@@ -22,7 +22,7 @@ public class StartFragment extends Fragment {
 
     private View view;
     //ui
-    private Button start;
+//    private Button start;
     private Button pause;
     private TextView timer;
 
@@ -34,7 +34,7 @@ public class StartFragment extends Fragment {
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState){
         view = inflater.inflate(R.layout.start, container, false);
-        start = view.findViewById(R.id.start);
+//        start = view.findViewById(R.id.start);
         pause = view.findViewById(R.id.pause);
         timer = view.findViewById(R.id.timer_text);
         mCircleProgress = view.findViewById(R.id.tasks_view);
@@ -47,12 +47,12 @@ public class StartFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState){
         super.onActivityCreated(savedInstanceState);
 
-        start.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ((MainActivity) getActivity()).start();
-            }
-        });
+//        start.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                ((MainActivity) getActivity()).start();
+//            }
+//        });
 
         pause.setOnClickListener(new View.OnClickListener() {
             @Override
