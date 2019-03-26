@@ -55,7 +55,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:text="Length of each tamato"
-        android:textColor="@color/white"
+        android:textColor="@android:color/black"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -66,7 +66,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:text="Length of short rest"
-        android:textColor="@color/white"
+        android:textColor="@android:color/black"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tamato_spinner" />
 
@@ -78,7 +78,7 @@
         android:layout_marginTop="16dp"
         android:text="tamato before long rest"
         android:textAllCaps="false"
-        android:textColor="@color/white"
+        android:textColor="@android:color/black"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/shortrest_spinner" />
 
@@ -89,7 +89,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:text="length of long rest"
-        android:textColor="@color/white"
+        android:textColor="@android:color/black"
         android:textSize="14sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/gap_spinner" />

@@ -16,6 +16,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -54,6 +55,9 @@ public class MainActivity extends AppCompatActivity{
 
     Intent mMediaServiceIntent;
     Intent mCountDownTimerIntent;
+
+    //to achieve press two back to cancel app
+    private long exitTime = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -161,6 +165,22 @@ public class MainActivity extends AppCompatActivity{
         }
     };
 
+    public boolean onKeyDown(int keyCode, KeyEvent event){
+
+        if( keyCode== KeyEvent.KEYCODE_HOME){
+            return true;
+        } else if( keyCode== KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN){
+            if((System.currentTimeMillis()- exitTime) > 2000){
+                Toast.makeText(getApplicationContext(), "再按一次退出程序", Toast.LENGTH_SHORT).show();
+                exitTime = System.currentTimeMillis();
+            } else {
+                finish();
+                System.exit(0);
+            }
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
     //stop and unbind service when cancel the app
     @Override
     public void onDestroy(){
@@ -217,8 +237,9 @@ public class MainActivity extends AppCompatActivity{
                 beginTransaction.commit();
                 //make the color of bottom and status bar looks better
                 //StatusBarCompat is a third party tool to make it easier
-                bnve.setBackgroundColor(Color.parseColor("#344FDA"));
-                StatusBarCompat.setStatusBarColor(this, Color.parseColor("#34A2DA"));
+                //bnve.setBackgroundColor(Color.parseColor("#34A2DA"));
+                //bnve.getIconAt(2).setColorFilter(ColorFilter);
+                StatusBarCompat.setStatusBarColor(this, Color.parseColor("#ffffff"));
                 break;
             case R.id.music_fragment:
                 hideAll();

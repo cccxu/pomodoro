@@ -102,7 +102,7 @@ public class MediaService extends Service {
 
         public void closeMedia(){
             if(mMediaPlayer != null){
-                mMediaPlayer.stop();
+                //mMediaPlayer.stop();
                 mMediaPlayer.release();
             }
         }
