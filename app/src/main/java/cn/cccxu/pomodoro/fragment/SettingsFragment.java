@@ -13,6 +13,10 @@ import com.jaredrummler.materialspinner.MaterialSpinner;
 
 import cn.cccxu.pomodoro.R;
 
+/**
+ * created by cccxu CQUID 20161730
+ */
+
 public class SettingsFragment extends Fragment {
 
     private MaterialSpinner tamato_spinner;
@@ -40,6 +44,7 @@ public class SettingsFragment extends Fragment {
         tamatoBeforeLongRest = settings.getString("TamatoBeforeLongRest", "4");
         lengthOfLongRest = settings.getString("LengthOfLongRest", "15");
 
+        //set spinner
         tamato_spinner = (MaterialSpinner) view.findViewById(R.id.tamato_spinner);
         shortrest_spinner = (MaterialSpinner) view.findViewById(R.id.shortrest_spinner);
         longrest_spinner = (MaterialSpinner) view.findViewById(R.id.longrest_spinner);

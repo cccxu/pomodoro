@@ -12,6 +12,10 @@ import android.widget.TextView;
 
 import cn.cccxu.pomodoro.R;
 
+/**
+ * created by cccxu CQUID 20161730
+ */
+
 public class HistoryFragment extends Fragment {
 
     private TextView tamatoNum;

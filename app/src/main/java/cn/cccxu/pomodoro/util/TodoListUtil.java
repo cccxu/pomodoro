@@ -2,13 +2,13 @@ package cn.cccxu.pomodoro.util;
 
 import com.yalantis.beamazingtoday.interfaces.BatModel;
 
-public class Goal implements BatModel {
+public class TodoListUtil implements BatModel {
 
     private String name;
 
     private boolean isChecked;
 
-    public Goal(String name){
+    public TodoListUtil(String name){
         this.name = name;
     }
 

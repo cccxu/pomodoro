@@ -1,14 +1,27 @@
 package cn.cccxu.pomodoro.service;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.BitmapFactory;
 import android.os.Binder;
+import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
+
+import cn.cccxu.pomodoro.R;
+import cn.cccxu.pomodoro.activity.MainActivity;
+
+/**
+ * created by cccxu CQUID 20161730
+ */
 
 public class CountDownTimerService extends Service {
 
@@ -29,12 +42,46 @@ public class CountDownTimerService extends Service {
     private boolean tick = false;
 
     private long totalTime;
+
     public static final String IN_RUNNING = "cn.cccxu.pomodoro.IN_RUNNING";
     public static final String END_RUNNING = "cn.cccxu.END_RUNNING";
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel chan = new NotificationChannel("myCountDown", "countdown channel", NotificationManager.IMPORTANCE_NONE);
+            NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            manager.createNotificationChannel(chan);
+
+            Notification.Builder builder = new Notification.Builder(this, "myCountDown"); //获取一个Notification构造器
+            Intent nfIntent = new Intent(this, MainActivity.class);
+
+            builder.setContentIntent(PendingIntent.getActivity(this, 0, nfIntent, 0))
+                    .setLargeIcon(BitmapFactory.decodeResource(this.getResources(), R.drawable.start))
+                    .setContentTitle("pomodoro counting down")
+                    .setSmallIcon(R.drawable.app_icon)
+                    .setWhen(System.currentTimeMillis());
+
+
+            Notification notification = builder.build();
+            startForeground(1, notification);
+        }else{
+            Notification.Builder builder = new Notification.Builder(this.getApplicationContext());
+            Intent nfIntent = new Intent(this, MainActivity.class);
+
+            builder.setContentIntent(PendingIntent.getActivity(this, 0, nfIntent, 0))
+                    .setLargeIcon(BitmapFactory.decodeResource(this.getResources(), R.drawable.start))
+                    .setContentTitle("pomodoro counting down")
+                    .setSmallIcon(R.drawable.app_icon)
+                    .setWhen(System.currentTimeMillis());
+
+            Notification notification = builder.build();
+            startForeground(1, notification);
+        }
+
         return mMyBinder;
     }
 
@@ -87,6 +134,7 @@ public class CountDownTimerService extends Service {
                 public void onFinish() {
                     switch(flag){
                         case 0:
+                            //finish a tamato
                             count++;
                             if(count % Integer.valueOf(tamatoBeforeLongRest) == 0){
                                 flag = 2;
@@ -107,9 +155,11 @@ public class CountDownTimerService extends Service {
                             }
                             break;
                         case 1:
+                            //finish short rest
                             flag = 0;
                             break;
                         case 2:
+                            //finish long rest
                             flag = 0;
                             break;
                     }
@@ -121,6 +171,8 @@ public class CountDownTimerService extends Service {
             tick = true;
         }
 
+        //this is called by abadon button
+        //whenever is called timer will be set to tamato
         public void stopTimer(){
             if(mCountDownTimer == null){
                 return;
@@ -141,5 +193,11 @@ public class CountDownTimerService extends Service {
         lengthOfShortRest = settings.getString("LengthOfShortRest", "5");
         tamatoBeforeLongRest = settings.getString("TamatoBeforeLongRest", "4");
         lengthOfLongRest = settings.getString("LengthOfLongRest", "15");
+    }
+
+    @Override
+    public void onDestroy(){
+        stopForeground(true);
+        super.onDestroy();
     }
 }

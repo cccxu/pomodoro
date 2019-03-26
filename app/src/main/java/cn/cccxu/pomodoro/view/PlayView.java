@@ -1,4 +1,4 @@
-package cn.cccxu.view;
+package cn.cccxu.pomodoro.view;
 
 
 import android.content.Context;
@@ -13,14 +13,9 @@ import android.widget.Checkable;
 
 import cn.cccxu.pomodoro.R;
 
-
 /**
- * Created by DuanJiaNing on 2017/6/15.
- * 【播放】
- * 【暂停】
- * 控件由如下几部分组成：
- * 1 暂停状态下的三角形，直接继承自 SkipView
- * 2 播放状态下的双竖线
+ * this is a view to draw play button
+ * this view is from DuanJiaNing from github
  */
 
 public class PlayView extends SkipView implements Checkable {

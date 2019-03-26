@@ -24,7 +24,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.cccxu.pomodoro.R;
-import cn.cccxu.pomodoro.util.Goal;
+import cn.cccxu.pomodoro.util.TodoListUtil;
+
+/**
+ * created by cccxu CQUID 20161730
+ */
 
 public class TodoFragment extends Fragment implements BatListener, OnItemClickListener, OnOutsideClickedListener {
 
@@ -67,7 +71,7 @@ public class TodoFragment extends Fragment implements BatListener, OnItemClickLi
 
     @Override
     public void add(String s) {
-        mGoals.add(0, new Goal(s));
+        mGoals.add(0, new TodoListUtil(s));
         mAdapter.notify(AnimationType.ADD, 0);
     }
 

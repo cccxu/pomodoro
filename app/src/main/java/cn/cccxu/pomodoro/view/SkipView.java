@@ -1,4 +1,4 @@
-package cn.cccxu.view;
+package cn.cccxu.pomodoro.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -12,18 +12,9 @@ import android.util.AttributeSet;
 import cn.cccxu.pomodoro.R;
 
 /**
- * Created by DuanJiaNing on 2017/6/15.
- * 【上一曲】
- * 【下一曲】
- * <p>
- * 控件由如下几部分组成：
- * 1 继承自 MediaView 的圆圈部分
- * 2 内部的单竖线
- * 3 内部的等腰三角形
- * <p>
- * tip: 在 xml 中使用 rotation 属性可实现控件旋转：
- * 如：绕 z 轴旋转 180 度
- * android:rotation="180"
+ * this is a view to draw skip button
+ * this view is never been used but it is the base for play view
+ * this view is from DuanJiaNing from github
  */
 
 public class SkipView extends MediaView {

@@ -1,4 +1,4 @@
-package cn.cccxu.view;
+package cn.cccxu.pomodoro.view;
 
 
 import android.animation.Animator;
@@ -21,8 +21,9 @@ import cn.cccxu.pomodoro.R;
 
 
 /**
- * Created by DuanJiaNing on 2017/6/14.
- * 媒体控件抽象基类
+ * this is a view to draw media button
+ * this is the base class for play view and skip view
+ * this view is from DuanJiaNing from github
  */
 
 public abstract class MediaView extends View implements ValueAnimator.AnimatorUpdateListener {

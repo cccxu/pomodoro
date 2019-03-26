@@ -14,6 +14,10 @@ import com.coder.circlebar.CircleBar;
 import cn.cccxu.pomodoro.R;
 import cn.cccxu.pomodoro.activity.MainActivity;
 
+/**
+ * created by cccxu CQUID 20161730
+ */
+
 public class StartFragment extends Fragment {
 
     private View view;
@@ -58,6 +62,7 @@ public class StartFragment extends Fragment {
         });
     }
 
+    //for main activity to use to set text of timer
     public void setText(String text){
         timer.setText(text);
     }

@@ -17,7 +17,6 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.githang.statusbar.StatusBarCompat;
@@ -32,15 +31,21 @@ import cn.cccxu.pomodoro.fragment.TodoFragment;
 import cn.cccxu.pomodoro.service.CountDownTimerService;
 import cn.cccxu.pomodoro.service.MediaService;
 
+/**
+ * create by cccxu CQUID 20161730
+ */
 public class MainActivity extends AppCompatActivity{
+    //five fragment
+    //todo : combine MusicFragment with StartFragment
+    //todo : combine HistoryFragment with SettingsFragment
     private TodoFragment todoFragment;
     private MusicFragment musicFragment;
     private StartFragment startFragment;
     private HistoryFragment historyFragment;
     private SettingsFragment settingsFragment;
 
-    private TextView timerText;
-
+    //mHandler is for music service
+    //mHandlerCount is for countdown service
     private Handler mHandler = new Handler();
     private Handler mHandlerCount = new Handler();
     //use binder to call method in service
@@ -55,13 +60,14 @@ public class MainActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //set title
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle("Promodoro");
 
+        //bnve is a third party BottomNavigationView
         BottomNavigationViewEx bnve = (BottomNavigationViewEx) findViewById(R.id.bnve);
         bnve.setOnNavigationItemSelectedListener(mNavigationItemSelectedListener);
-
 
         //fragment init and bind
         todoFragment = new TodoFragment();
@@ -86,8 +92,10 @@ public class MainActivity extends AppCompatActivity{
         mMediaServiceIntent = new Intent(this, MediaService.class);
         bindService(mMediaServiceIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
 
+
         mCountDownTimerIntent = new Intent(this, CountDownTimerService.class);
         bindService(mCountDownTimerIntent, mServiceConnectionCount, Context.BIND_AUTO_CREATE);
+
         //use shared preference to save data
         SharedPreferences settings = getSharedPreferences("settings", Context.MODE_PRIVATE);
         //check iif the preference exist
@@ -102,6 +110,7 @@ public class MainActivity extends AppCompatActivity{
         }
     }
 
+    //set bottomNavagationView listener
     private BottomNavigationViewEx.OnNavigationItemSelectedListener mNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -126,6 +135,7 @@ public class MainActivity extends AppCompatActivity{
         }
     };
 
+    //connect music service
     private ServiceConnection mServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -138,6 +148,7 @@ public class MainActivity extends AppCompatActivity{
         }
     };
 
+    //count countdown service
     private ServiceConnection mServiceConnectionCount = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -150,11 +161,13 @@ public class MainActivity extends AppCompatActivity{
         }
     };
 
+    //stop and unbind service when cancel the app
     @Override
     public void onDestroy(){
         super.onDestroy();
         mHandler.removeCallbacks(mRunnable);
         mMyBinder.closeMedia();
+        mMyBinderCount.stopTimer();
         unbindService(mServiceConnection);
         unbindService(mServiceConnectionCount);
     }
@@ -162,14 +175,14 @@ public class MainActivity extends AppCompatActivity{
     @Override
     protected void onResume() {
         super.onResume();
-        // 注册广播
+        // regist receiver
         registerReceiver(mUpdateReceiver, updateIntentFilter());
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        // 移除注册
+        // remove receiver
         unregisterReceiver(mUpdateReceiver);
     }
 
@@ -181,6 +194,7 @@ public class MainActivity extends AppCompatActivity{
         }
     };
 
+    //hide all fragment
     private void hideAll(){
         FragmentTransaction beginTransaction = getFragmentManager().beginTransaction();
         beginTransaction.hide(todoFragment)
@@ -201,6 +215,8 @@ public class MainActivity extends AppCompatActivity{
                 beginTransaction.show(todoFragment);
                 beginTransaction.addToBackStack(null);
                 beginTransaction.commit();
+                //make the color of bottom and status bar looks better
+                //StatusBarCompat is a third party tool to make it easier
                 bnve.setBackgroundColor(Color.parseColor("#344FDA"));
                 StatusBarCompat.setStatusBarColor(this, Color.parseColor("#34A2DA"));
                 break;
@@ -222,6 +238,7 @@ public class MainActivity extends AppCompatActivity{
                 beginTransaction.show(historyFragment);
                 beginTransaction.addToBackStack(null);
                 beginTransaction.commit();
+                //update the history tamato
                 historyFragment.updateTamatoNum();
                 break;
             case R.id.settings_fragment:
@@ -234,10 +251,13 @@ public class MainActivity extends AppCompatActivity{
         }
     }
 
+    //this is for MusicFragment to use
+    //start play music
     public void play(){
         mMyBinder.playMusic();
     }
-
+    //this is for MusicFragment to use
+    //pause the music
     public void pause(){
         mMyBinder.pauseMusic();
     }
@@ -276,11 +296,12 @@ public class MainActivity extends AppCompatActivity{
                             time = " " + time;
                         }
                     }
+                    //set timer text and progress
                     startFragment.setText(time);
                     startFragment.setProgress(Integer.valueOf(maxstr)/1000,Integer.valueOf(secondstr));
                     break;
                 case CountDownTimerService.END_RUNNING:
-                    //do sth
+                    //start the next auto
                     start();
                     break;
                 default:
@@ -290,17 +311,22 @@ public class MainActivity extends AppCompatActivity{
         }
     };
 
-
+    //to simplfy make toast
     private void makeToast(String text){
-        Toast.makeText(this, text, Toast.LENGTH_LONG);
+        Toast.makeText(this, text, Toast.LENGTH_LONG).show();
     }
 
+    //this is for MusicFragment to use
+    //to start count
     public void start(){
         mMyBinderCount.startTimer();
     }
 
+    //this is for MusicFragment to use
+    //to abandon / stop timer
     public void stop(){
         mMyBinderCount.stopTimer();
+        //make the timer text looks better
         SharedPreferences settings = getSharedPreferences("settings", Context.MODE_PRIVATE);
         startFragment.setText(settings.getString("LengthOfTamato", "25") + " : 00");
     }

@@ -7,12 +7,10 @@ import android.os.SystemClock;
 /**
  * DownTimer
  * @author cjj
- * @category 倒计时工具类
+ * @category 倒计时工具类 // countdown timer tuil
  * @version 1.0
- * @content
- *  <b>1.实例化后必须设置倒计时的总时间（totalTime）和每隔多久时间（intervalTime）回调</b><br>
- *  <b>2.有start()、 cancel()、 pause()、resume() 四个方法看方法就知道它的意思了 </b>
  */
+
 public class CountDownTimerUtil {
     private long totalTime = -1;
     private long intervalTime = 0;

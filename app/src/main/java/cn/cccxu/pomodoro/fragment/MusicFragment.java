@@ -9,7 +9,11 @@ import android.view.ViewGroup;
 
 import cn.cccxu.pomodoro.R;
 import cn.cccxu.pomodoro.activity.MainActivity;
-import cn.cccxu.view.PlayView;
+import cn.cccxu.pomodoro.view.PlayView;
+
+/**
+ * created by cccxu CQUID 20161730
+ */
 
 public class MusicFragment extends Fragment{
 
@@ -52,12 +56,14 @@ public class MusicFragment extends Fragment{
         play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(play.isPlaying()){
+                if(!play.isPlaying()){
                     ((MainActivity) getActivity()).pause();
-                    play.setChecked(false);
+                    //play.setPlayStatus(false);
+                   // play.setChecked(false);
                 }else {
                     ((MainActivity) getActivity()).play();
-                    play.setChecked(true);
+                    //play.setPlayStatus(true);
+                    //play.setChecked(true);
                 }
             }
         });
