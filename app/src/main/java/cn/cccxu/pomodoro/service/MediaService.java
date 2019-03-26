@@ -64,24 +64,24 @@ public class MediaService extends Service {
 
             builder.setContentIntent(PendingIntent.getActivity(this, 0, nfIntent, 0))
                     .setLargeIcon(BitmapFactory.decodeResource(this.getResources(), R.drawable.music))
-                    .setContentTitle("pomodoro playing")
+                    .setContentTitle("pomodoro is running")
                     .setSmallIcon(R.drawable.app_icon)
                     .setWhen(System.currentTimeMillis());
 
             Notification notification = builder.build();
-            startForeground(2, notification);
+            startForeground(0, notification);
         }else{
             Notification.Builder builder = new Notification.Builder(this.getApplicationContext());
             Intent nfIntent = new Intent(this, MainActivity.class);
 
             builder.setContentIntent(PendingIntent.getActivity(this, 0, nfIntent, 0))
                     .setLargeIcon(BitmapFactory.decodeResource(this.getResources(), R.drawable.music))
-                    .setContentTitle("pomodoro playing")
+                    .setContentTitle("pomodoro is running")
                     .setSmallIcon(R.drawable.app_icon)
                     .setWhen(System.currentTimeMillis());
 
             Notification notification = builder.build();
-            startForeground(2, notification);
+            startForeground(0, notification);
         }
 
         return mBinder;
@@ -103,6 +103,7 @@ public class MediaService extends Service {
         public void closeMedia(){
             if(mMediaPlayer != null){
                 //mMediaPlayer.stop();
+                mMediaPlayer.pause();
                 mMediaPlayer.release();
             }
         }

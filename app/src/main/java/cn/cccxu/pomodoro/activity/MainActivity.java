@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity{
         //set title
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setTitle("Promodoro");
+        getSupportActionBar().setTitle("Pomodoro");
 
         //bnve is a third party BottomNavigationView
         BottomNavigationViewEx bnve = (BottomNavigationViewEx) findViewById(R.id.bnve);
